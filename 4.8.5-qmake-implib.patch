@@ -1,0 +1,20 @@
+--- origsrc/qt-everywhere-opensource-src-4.8.5/qmake/generators/win32/mingw_make.cpp	2013-06-07 00:17:01.000000000 -0500
++++ src/qt-everywhere-opensource-src-4.8.5/qmake/generators/win32/mingw_make.cpp	2013-11-24 19:55:23.456227800 -0600
+@@ -77,7 +77,7 @@ QString MingwMakefileGenerator::escapeDe
+ 
+ QString MingwMakefileGenerator::getLibTarget()
+ {
+-    return QString("lib" + project->first("TARGET") + project->first("TARGET_VERSION_EXT") + ".a");
++    return QString("lib" + project->first("TARGET") + project->first("TARGET_VERSION_EXT") + ".dll.a");
+ }
+ 
+ bool MingwMakefileGenerator::findLibraries()
+@@ -299,7 +299,7 @@ void MingwMakefileGenerator::init()
+         if(!project->first("DESTDIR").isEmpty())
+             destDir = Option::fixPathToTargetOS(project->first("DESTDIR") + Option::dir_sep, false, false);
+         project->values("MINGW_IMPORT_LIB").prepend(destDir + "lib" + project->first("TARGET")
+-                                                         + project->first("TARGET_VERSION_EXT") + ".a");
++                                                         + project->first("TARGET_VERSION_EXT") + ".dll.a");
+ 	project->values("QMAKE_LFLAGS").append(QString("-Wl,--out-implib,") + project->first("MINGW_IMPORT_LIB"));
+     }
+ 
