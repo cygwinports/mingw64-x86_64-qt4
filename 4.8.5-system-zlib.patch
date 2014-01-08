@@ -1,0 +1,22 @@
+--- origsrc/qt-everywhere-opensource-src-4.8.5/src/tools/bootstrap/bootstrap.pri	2013-06-07 00:17:00.000000000 -0500
++++ src/qt-everywhere-opensource-src-4.8.5/src/tools/bootstrap/bootstrap.pri	2014-01-06 01:04:29.919164600 -0600
+@@ -53,7 +53,7 @@ hpux-acc*|hpuxi-acc* {
+     }
+     LIBS += -lbootstrap
+ }
+-!contains(QT_CONFIG, zlib):!contains(QT_CONFIG, no-zlib):!cross_compile {
++!contains(QT_CONFIG, zlib):!contains(QT_CONFIG, no-zlib) {
+     symbian:LIBS_PRIVATE += -llibz
+     else:if(unix|win32-g++*):LIBS_PRIVATE += -lz
+     else:LIBS += zdll.lib
+--- origsrc/qt-everywhere-opensource-src-4.8.5/src/tools/bootstrap/bootstrap.pro	2013-06-07 00:17:00.000000000 -0500
++++ src/qt-everywhere-opensource-src-4.8.5/src/tools/bootstrap/bootstrap.pro	2014-01-06 01:04:44.345496500 -0600
+@@ -109,7 +109,7 @@ macx: {
+    LIBS += -framework CoreServices
+ }
+ 
+-if(contains(QT_CONFIG, zlib)|cross_compile):include(../../3rdparty/zlib.pri)
++if(contains(QT_CONFIG, zlib)):include(../../3rdparty/zlib.pri)
+ else:include(../../3rdparty/zlib_dependency.pri)
+ 
+ lib.CONFIG = dummy_install

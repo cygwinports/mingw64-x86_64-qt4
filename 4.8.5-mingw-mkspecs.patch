@@ -1,0 +1,70 @@
+--- origsrc/qt-everywhere-opensource-src-4.8.5/mkspecs/win32-g++/qmake.conf	2014-01-07 15:06:27.193450400 -0600
++++ src/qt-everywhere-opensource-src-4.8.5/mkspecs/win32-g++/qmake.conf	2014-01-07 14:15:57.338707700 -0600
+@@ -63,7 +63,7 @@ QMAKE_LINK_C		= $${CROSS_COMPILE}gcc
+ QMAKE_LFLAGS		=
+ QMAKE_LFLAGS_EXCEPTIONS_ON = -mthreads
+ QMAKE_LFLAGS_EXCEPTIONS_OFF =
+-QMAKE_LFLAGS_RELEASE	= -Wl,-s
++QMAKE_LFLAGS_RELEASE	=
+ QMAKE_LFLAGS_DEBUG	=
+ QMAKE_LFLAGS_CONSOLE	= -Wl,-subsystem,console
+ QMAKE_LFLAGS_WINDOWS	= -Wl,-subsystem,windows
+@@ -75,40 +75,37 @@ QMAKE_EXTENSION_STATICLIB = a
+ 
+ 
+ QMAKE_LIBS		=
+-QMAKE_LIBS_CORE         = -lole32 -luuid -lws2_32 -ladvapi32 -lshell32 -luser32 -lkernel32
+-QMAKE_LIBS_GUI          = -lgdi32 -lcomdlg32 -loleaut32 -limm32 -lwinmm -lwinspool -lws2_32 -lole32 -luuid -luser32 -ladvapi32
+-QMAKE_LIBS_NETWORK      = -lws2_32
++QMAKE_LIBS_CORE         = -lz -lole32 -luuid -lws2_32 -ladvapi32 -lshell32 -luser32 -lkernel32
++QMAKE_LIBS_GUI          = -ltiff -ljbig -llzma -lmng -llcms -ljpeg -lpng -lgdi32 -lcomdlg32 -loleaut32 -limm32 -lwinmm -lwinspool -lws2_32 -lole32 -luuid -luser32 -ladvapi32
++QMAKE_LIBS_NETWORK      = -lssl -lcrypto -lgdi32 -lws2_32
+ QMAKE_LIBS_OPENGL       = -lglu32 -lopengl32 -lgdi32 -luser32
+ QMAKE_LIBS_COMPAT       = -ladvapi32 -lshell32 -lcomdlg32 -luser32 -lgdi32 -lws2_32
+ QMAKE_LIBS_QT_ENTRY     = -lmingw32 -lqtmain
+ 
+-!isEmpty(QMAKE_SH) {
+     MINGW_IN_SHELL      = 1
+ 	QMAKE_DIR_SEP		= /
+ 	QMAKE_QMAKE		~= s,\\\\,/,
+-	QMAKE_COPY		= cp
+-	QMAKE_COPY_DIR		= cp -r
+-	QMAKE_MOVE		= mv
+-	QMAKE_DEL_FILE		= rm
++	QMAKE_COPY		= cp -f
++	QMAKE_COPY_DIR		= cp -fr
++	QMAKE_MOVE		= mv -f
++	QMAKE_DEL_FILE		= rm -f
+ 	QMAKE_MKDIR		= mkdir -p
+ 	QMAKE_DEL_DIR		= rmdir
+     QMAKE_CHK_DIR_EXISTS = test -d
+-} else {
+-	QMAKE_COPY		= copy /y
+-	QMAKE_COPY_DIR		= xcopy /s /q /y /i
+-	QMAKE_MOVE		= move
+-	QMAKE_DEL_FILE		= del
+-	QMAKE_MKDIR		= mkdir
+-	QMAKE_DEL_DIR		= rmdir
+-    QMAKE_CHK_DIR_EXISTS	= if not exist
+-}
+ 
+-QMAKE_MOC		= $$[QT_INSTALL_BINS]$${DIR_SEPARATOR}moc$${EXE_SUFFIX}
+-QMAKE_UIC		= $$[QT_INSTALL_BINS]$${DIR_SEPARATOR}uic$${EXE_SUFFIX}
++QMAKE_MOC		= $${CROSS_COMPILE}moc-qt4
++QMAKE_UIC		= $${CROSS_COMPILE}uic-qt4
+ QMAKE_IDC		= $$[QT_INSTALL_BINS]$${DIR_SEPARATOR}idc$${EXE_SUFFIX}
+-QMAKE_RCC		= $$[QT_INSTALL_BINS]$${DIR_SEPARATOR}rcc$${EXE_SUFFIX}
++QMAKE_RCC		= $${CROSS_COMPILE}rcc-qt4
++QMAKE_UIC3		= $${CROSS_COMPILE}uic3-qt4
++QMAKE_LCONVERT		= $${CROSS_COMPILE}lconvert-qt4
++QMAKE_LRELEASE		= $${CROSS_COMPILE}lrelease-qt4
++QMAKE_LUPDATE		= $${CROSS_COMPILE}lupdate-qt4
++QMAKE_QDBUSXML2CPP	= $${CROSS_COMPILE}qdbusxml2cpp-qt4
++QMAKE_QDBUSCPP2XML	= $${CROSS_COMPILE}qdbuscpp2xml-qt4
+ 
+-QMAKE_IDL		= midl
++PKG_CONFIG		= $${CROSS_COMPILE}pkg-config
++QMAKE_IDL		= $${CROSS_COMPILE}widl
+ QMAKE_LIB		= $${CROSS_COMPILE}ar -ru
+ QMAKE_RC		= $${CROSS_COMPILE}windres
+ QMAKE_ZIP		= zip -r -9

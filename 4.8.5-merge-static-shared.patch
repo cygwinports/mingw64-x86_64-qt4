@@ -1,0 +1,134 @@
+--- originst/usr/x86_64-w64-mingw32/sys-root/mingw/include/qt4/Qt/qconfig.h	2014-01-07 13:13:43.347551000 -0600
++++ inst/usr/x86_64-w64-mingw32/sys-root/mingw/include/qt4/Qt/qconfig.h	2014-01-07 14:01:28.101828600 -0600
+@@ -98,6 +98,13 @@
+ # define QT_NO_ICD
+ #endif
+ 
++#if defined(QT_NODLL)
++#if defined(QT_BUILTIN_GIF_READER) && defined(QT_NO_BUILTIN_GIF_READER)
++# undef QT_BUILTIN_GIF_READER
++#elif !defined(QT_BUILTIN_GIF_READER) && !defined(QT_NO_BUILTIN_GIF_READER)
++# define QT_BUILTIN_GIF_READER 1
++#endif
++#else
+ #if defined(QT_NO_IMAGEFORMAT_JPEG) && defined(QT_IMAGEFORMAT_JPEG)
+ # undef QT_NO_IMAGEFORMAT_JPEG
+ #elif !defined(QT_NO_IMAGEFORMAT_JPEG) && !defined(QT_IMAGEFORMAT_JPEG)
+@@ -115,6 +122,7 @@
+ #elif !defined(QT_NO_IMAGEFORMAT_TIFF) && !defined(QT_IMAGEFORMAT_TIFF)
+ # define QT_NO_IMAGEFORMAT_TIFF
+ #endif
++#endif
+ 
+ #if defined(QT_NO_INOTIFY) && defined(QT_INOTIFY)
+ # undef QT_NO_INOTIFY
+@@ -182,6 +190,14 @@
+ # define QT_NO_SXE
+ #endif
+ 
++#if defined(QT_NODLL)
++#if defined(QT_NO_WEBKIT) && defined(QT_WEBKIT)
++# undef QT_NO_WEBKIT
++#elif !defined(QT_NO_WEBKIT) && !defined(QT_WEBKIT)
++# define QT_NO_WEBKIT
++#endif
++#endif
++
+ #if defined(QT_NO_ZLIB) && defined(QT_ZLIB)
+ # undef QT_NO_ZLIB
+ #elif !defined(QT_NO_ZLIB) && !defined(QT_ZLIB)
+--- originst/usr/x86_64-w64-mingw32/sys-root/mingw/include/qt4/QtCore/qconfig.h	2014-01-07 13:13:43.495069800 -0600
++++ inst/usr/x86_64-w64-mingw32/sys-root/mingw/include/qt4/QtCore/qconfig.h	2014-01-07 14:01:23.816784500 -0600
+@@ -98,6 +98,13 @@
+ # define QT_NO_ICD
+ #endif
+ 
++#if defined(QT_NODLL)
++#if defined(QT_BUILTIN_GIF_READER) && defined(QT_NO_BUILTIN_GIF_READER)
++# undef QT_BUILTIN_GIF_READER
++#elif !defined(QT_BUILTIN_GIF_READER) && !defined(QT_NO_BUILTIN_GIF_READER)
++# define QT_BUILTIN_GIF_READER 1
++#endif
++#else
+ #if defined(QT_NO_IMAGEFORMAT_JPEG) && defined(QT_IMAGEFORMAT_JPEG)
+ # undef QT_NO_IMAGEFORMAT_JPEG
+ #elif !defined(QT_NO_IMAGEFORMAT_JPEG) && !defined(QT_IMAGEFORMAT_JPEG)
+@@ -115,6 +122,7 @@
+ #elif !defined(QT_NO_IMAGEFORMAT_TIFF) && !defined(QT_IMAGEFORMAT_TIFF)
+ # define QT_NO_IMAGEFORMAT_TIFF
+ #endif
++#endif
+ 
+ #if defined(QT_NO_INOTIFY) && defined(QT_INOTIFY)
+ # undef QT_NO_INOTIFY
+@@ -182,6 +190,14 @@
+ # define QT_NO_SXE
+ #endif
+ 
++#if defined(QT_NODLL)
++#if defined(QT_NO_WEBKIT) && defined(QT_WEBKIT)
++# undef QT_NO_WEBKIT
++#elif !defined(QT_NO_WEBKIT) && !defined(QT_WEBKIT)
++# define QT_NO_WEBKIT
++#endif
++#endif
++
+ #if defined(QT_NO_ZLIB) && defined(QT_ZLIB)
+ # undef QT_NO_ZLIB
+ #elif !defined(QT_NO_ZLIB) && !defined(QT_ZLIB)
+--- originst/usr/x86_64-w64-mingw32/sys-root/mingw/share/qt4/mkspecs/features/qt_functions.prf	2014-01-07 13:13:30.371403300 -0600
++++ inst/usr/x86_64-w64-mingw32/sys-root/mingw/share/qt4/mkspecs/features/qt_functions.prf	2014-01-07 14:07:30.543352900 -0600
+@@ -71,7 +71,7 @@ defineTest(qtAddLibrary) {
+         export(TARGET.CAPABILITY)
+     }
+     isEmpty(LINKAGE) {
+-       if(!debug_and_release|build_pass):CONFIG(debug, debug|release) {
++       if(!debug_and_release|build_pass):!static:CONFIG(debug, debug|release) {
+            win32:LINKAGE = -l$${LIB_NAME}$${QT_LIBINFIX}d
+            mac:LINKAGE = -l$${LIB_NAME}$${QT_LIBINFIX}_debug
+        }
+@@ -83,6 +83,17 @@ defineTest(qtAddLibrary) {
+         QMAKE_LFLAGS *= --lsb-shared-libs=$${LIB_NAME}$${QT_LIBINFIX}
+     }
+     LIBS += $$LINKAGE
++    win32:CONFIG(static) {
++        isEqual(LIB_NAME, QtCore) {
++            LIBS += $$QMAKE_LIBS_CORE
++        } else:isEqual(LIB_NAME, QtGui) {
++            LIBS += $$QMAKE_LIBS_GUI
++        } else:isEqual(LIB_NAME, QtNetwork) {
++            LIBS += $$QMAKE_LIBS_NETWORK
++        } else:isEqual(LIB_NAME, QtOpenGL) {
++            LIBS += $$QMAKE_LIBS_OPENGL
++        }
++    }
+     export(LIBS)
+     export(INCLUDEPATH)
+     export(QMAKE_FRAMEWORKPATH)
+--- originst/usr/x86_64-w64-mingw32/sys-root/mingw/share/qt4/mkspecs/features/win32/default_post.prf	2014-01-07 13:13:30.634436700 -0600
++++ inst/usr/x86_64-w64-mingw32/sys-root/mingw/share/qt4/mkspecs/features/win32/default_post.prf	2014-01-07 14:07:30.537352100 -0600
+@@ -6,6 +6,10 @@
+     }
+ }
+ 
++contains(CONFIG, static) {
++    QMAKE_LFLAGS += -static
++}
++
+ # Now load the global default_post
+ load(default_post)
+ 
+--- originst/usr/x86_64-w64-mingw32/sys-root/mingw/share/qt4/mkspecs/qconfig.pri	2014-01-07 13:13:28.959224000 -0600
++++ inst/usr/x86_64-w64-mingw32/sys-root/mingw/share/qt4/mkspecs/qconfig.pri	2014-01-07 14:05:47.497267700 -0600
+@@ -4,6 +4,11 @@ QT_ARCH = windows
+ QT_EDITION = OpenSource
+ QT_CONFIG +=  minimal-config small-config medium-config large-config full-config qt3support accessibility opengl shared ipv6 getaddrinfo system-jpeg system-mng system-png png system-tiff no-freetype system-zlib iconv dbus dbus-linked openssl-linked concurrent xmlpatterns multimedia audio-backend svg script scripttools release
+ 
++contains(CONFIG, static) {
++  QT_CONFIG -= shared
++  QT_CONFIG += static gif jpeg mng tiff
++}
++
+ #versioning
+ QT_VERSION = 4.8.5
+ QT_MAJOR_VERSION = 4
