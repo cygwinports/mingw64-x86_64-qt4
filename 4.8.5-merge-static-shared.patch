@@ -130,5 +130,5 @@
 +}
 +
  #versioning
- QT_VERSION = 4.8.5
+ QT_VERSION = 4.8.6
  QT_MAJOR_VERSION = 4

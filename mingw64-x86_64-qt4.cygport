@@ -3,8 +3,8 @@ CROSS_QMAKESPEC="win32-g++"
 inherit cross
 
 NAME="mingw64-x86_64-qt4"
-VERSION=4.8.5
-RELEASE=2
+VERSION=4.8.6
+RELEASE=1
 CATEGORY="Devel"
 SUMMARY="Qt C++ GUI toolkit for Win64 toolchain"
 DESCRIPTION="This package does NOT contain cygwin binaries.  Instead, it
@@ -25,7 +25,8 @@ PATCH_URI="
 	fedora/qt-everywhere-opensource-src-4.8.1-linguist_qmake-qt4.patch
 	fedora/qt-automatically-set-shared-config-flag-for-lib-templates.patch
 	fedora/qt-dont-set-qt-dll-define-for-static-builds.patch
-	fedora/qt-include-intrin-h-on-mingw-w64.patch
+	fedora/qt-everywhere-opensource-src-4.8.6-QTBUG-38367.patch
+	fedora/qt-4.8.6-fix-out-of-tree-compilation.patch
 	4.5.3-makedepend.patch
 	4.8.1-cygwin-mkspecs.patch
 	4.8.1-cygwin-posix.patch
