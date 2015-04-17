@@ -4,7 +4,7 @@ inherit cross
 
 NAME="mingw64-x86_64-qt4"
 VERSION=4.8.6
-RELEASE=2
+RELEASE=3
 CATEGORY="Devel"
 SUMMARY="Qt C++ GUI toolkit for Win64 toolchain"
 DESCRIPTION="This package does NOT contain cygwin binaries.  Instead, it
@@ -26,12 +26,14 @@ PATCH_URI="
 	fedora/qt-dont-set-qt-dll-define-for-static-builds.patch
 	fedora/qt-everywhere-opensource-src-4.8.6-QTBUG-38367.patch
 	fedora/qt-4.8.6-fix-out-of-tree-compilation.patch
+	fedora/qt4-use-correct-pkg-config-static-flags.patch
 	4.5.3-makedepend.patch
 	4.8.1-cygwin-mkspecs.patch
 	4.8.1-cygwin-posix.patch
 	4.8.5-mingw-mkspecs.patch
 	4.8.5-qmake-implib.patch
 	4.8.5-system-zlib.patch
+	4.8.6-no-webkit.patch
 "
 REQUIRES="${NAME}-qmake"
 
@@ -59,7 +61,7 @@ src_compile() {
 		-force-pkg-config \
 		-release -no-debug -shared -fast \
 		-exceptions \
-		-no-declarative -no-phonon \
+		-no-phonon -no-webkit \
 		-no-sql-db2 -no-sql-ibase -no-sql-oci -no-sql-sqlite_symbian \
 		-no-sql-mysql \
 		-plugin-sql-psql \
@@ -74,7 +76,7 @@ src_compile() {
 		-continue -verbose \
 		-iconv \
 		-host-little-endian \
-		-nomake demos -nomake docs -nomake examples \
+		-make tools -nomake demos -nomake docs -nomake examples \
 		|| error "shared configure failed"
 
 	cygmake
@@ -98,13 +100,13 @@ src_compile() {
 		-force-pkg-config \
 		-release -no-debug -static -fast \
 		-exceptions \
-		-no-declarative -no-phonon -no-webkit \
+		-no-phonon -no-webkit \
 		-no-sql-db2 -no-sql-ibase -no-sql-oci -no-sql-sqlite_symbian \
 		-no-sql-mysql \
-		-plugin-sql-psql \
-		-plugin-sql-odbc \
-		-plugin-sql-sqlite -system-sqlite \
-		-plugin-sql-tds \
+		-no-sql-psql \
+		-qt-sql-odbc \
+		-qt-sql-sqlite -system-sqlite \
+		-no-sql-tds \
 		-system-zlib \
 		-system-libjpeg -system-libmng -system-libpng -system-libtiff \
 		-openssl-linked \
@@ -112,7 +114,7 @@ src_compile() {
 		-no-rpath \
 		-continue -verbose \
 		-host-little-endian \
-		-nomake demos -nomake docs -nomake examples \
+		-make tools -nomake demos -nomake docs -nomake examples \
 		|| error "static configure failed"
 
 	cygmake
@@ -133,7 +135,8 @@ src_install() {
 	cygpatch ${S}/4.8.5-merge-static-shared.patch
 	popd
 
-	# already installed in bin/
+	# already installed in bin/, except for QtUiTools
+	mv ${D}${CROSS_PREFIX}/{lib,bin}/QtUiTools4.dll
 	rm -f ${D}${CROSS_LIBDIR}/*.dll
 
 	# already provided by mingw-qt4-qmake
@@ -156,9 +159,6 @@ src_install() {
 	sed -e "/_location=/ s|=.*/bin/\(.*\)|=/usr/bin/${CROSS_HOST}-\1-qt4|g" \
 	    -e "/Libs\.private/s|\.*obj/[^ ]*||g;s/-luuid/-Wl,&/g" \
 	    -i ${D}${CROSS_LIBDIR}/pkgconfig/*.pc
-
-	sed -e "s| -lwebcore -ljscore | |" \
-		-i ${D}${CROSS_LIBDIR}/pkgconfig/QtWebKit.pc
 
 	dodoc ${S}/changes-${PV} ${S}/GPL_* ${S}/LICENSE.* ${S}/OPENSOURCE-NOTICE.TXT
 }
