@@ -4,7 +4,7 @@ inherit cross
 
 NAME="mingw64-x86_64-qt4"
 VERSION=4.8.7
-RELEASE=2
+RELEASE=3
 CATEGORY="Devel"
 SUMMARY="Qt C++ GUI toolkit for Win64 toolchain"
 DESCRIPTION="This package does NOT contain cygwin binaries.  Instead, it
@@ -38,6 +38,7 @@ REQUIRES="${NAME}-qmake"
 # qmake/moc/uic/rcc are built native, libraries are cross-compiled
 # therefore, these need to be determined by mkspecs
 unset CC CXX
+CXXFLAGS+=" -std=gnu++98 -Wno-unused-local-typedefs"
 
 src_compile() {
 	mkdir -p ${B}/shared

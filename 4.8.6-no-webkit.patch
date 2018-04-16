@@ -66,3 +66,12 @@
  
  FORMS += bookmarkdialog.ui \
      bookmarkmanagerwidget.ui \
+--- origsrc/qt-everywhere-opensource-src-4.8.7/tools/designer/src/plugins/plugins.pro	2015-05-07 09:14:40.000000000 -0500
++++ src/qt-everywhere-opensource-src-4.8.7/tools/designer/src/plugins/plugins.pro	2018-04-09 18:27:41.912554400 -0500
+@@ -5,6 +5,5 @@ REQUIRES = !CONFIG(static,shared|static)
+ contains(QT_CONFIG, qt3support): SUBDIRS += widgets
+ win32: SUBDIRS += activeqt
+ # contains(QT_CONFIG, opengl): SUBDIRS += tools/view3d
+-contains(QT_CONFIG, webkit): SUBDIRS += qwebview
+ contains(QT_CONFIG, phonon): SUBDIRS += phononwidgets
+ contains(QT_CONFIG, declarative): SUBDIRS += qdeclarativeview
